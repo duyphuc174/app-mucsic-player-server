@@ -28,6 +28,6 @@ app.get('/', (req, res) => {
 // Routes init
 route(app);
 
-app.listen(process.env.PORT, () => {
+app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });

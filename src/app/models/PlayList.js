@@ -6,8 +6,8 @@ const PlayList = new Schema(
     {
         name: { type: String },
         image: { type: String },
-        userId: { type: String },
-        songIds: { type: [] },
+        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        songs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Song' }],
     },
     {
         timestamps: true,

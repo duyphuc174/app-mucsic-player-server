@@ -3,9 +3,17 @@ const { mongooseToObject } = require('../../util/mongoose');
 
 class PlayListController {
     // [GET] /playlists/:userId
-    get(req, res, next) {
-        Promise.all([PlayList.find({ userId: req.params.userId })])
-            .then(([playlists]) => res.json(playlists))
+    async get(req, res, next) {
+        await PlayList.find({ user: req.params.userId })
+            .then((playLists) => res.json(playLists))
+            .catch(next);
+    }
+
+    // [GET] /playlists/:playListId
+    async get(req, res, next) {
+        await PlayList.findOne({ _id: req.params.id })
+            .populate('songs')
+            .then((playList) => res.json(playList))
             .catch(next);
     }
 
