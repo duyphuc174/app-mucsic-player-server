@@ -46,9 +46,6 @@ class SongController {
     }
 
     // [POST] /songs/:query
-    // find(req, res, next) {
-    //     Song.find({name: req.params.name})
-    // }
 }
 
 module.exports = new SongController();
