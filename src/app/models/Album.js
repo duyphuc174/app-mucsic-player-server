@@ -7,8 +7,8 @@ const Album = new Schema(
         name: { type: String },
         image: { type: String },
         releaseDate: { type: String },
-        artistId: { type: String },
-        songIds: { type: [] },
+        artist: { type: mongoose.Schema.Types.ObjectId, ref: 'Artist' },
+        songs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Song' }],
     },
     {
         timestamps: true,

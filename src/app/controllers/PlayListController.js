@@ -22,21 +22,21 @@ class PlayListController {
         const artist = new Artist(req.body);
         artist
             .save()
-            .then(() => res.json({ message: 'Thêm ca sĩ mới thành công!' }))
+            .then(() => res.json({ message: 'Thêm playlist mới thành công!' }))
             .catch(next);
     }
 
     // [DELETE] /artists/:id
     delete(req, res, next) {
         Artist.deleteOne({ _id: req.params.id })
-            .then(() => res.json({ message: 'Xóa ca sĩ thành công!' }))
+            .then(() => res.json({ message: 'Xóa playlist thành công!' }))
             .catch(next);
     }
 
     // [PUT] /artists/:id
     update(req, res, next) {
         Artist.updateOne({ _id: req.params.id }, req.body)
-            .then(() => res.json({ message: 'Sửa ca sĩ thành công!' }))
+            .then(() => res.json({ message: 'Sửa playlist thành công!' }))
             .catch(next);
     }
 }
