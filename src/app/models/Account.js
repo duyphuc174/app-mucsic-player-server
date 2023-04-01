@@ -7,7 +7,7 @@ const Account = new Schema(
         username: { type: String },
         password: { type: String },
         role: { type: String },
-        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        user: { type: String, ref: 'User' },
     },
     {
         timestamps: true,

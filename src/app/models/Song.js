@@ -9,7 +9,7 @@ const Song = new Schema(
         image: { type: String },
         lyrics: { type: String },
         audio: { type: String },
-        artist: { type: mongoose.Schema.Types.ObjectId, ref: 'Artist' },
+        artist: { type: String, ref: 'Artist' },
     },
     {
         timestamps: true,
