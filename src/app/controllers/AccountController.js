@@ -1,6 +1,7 @@
 const Account = require('../models/Account');
 const { mongooseToObject } = require('../../util/mongoose');
 const jwt = require('jsonwebtoken');
+const cookierParser = require('cookie-parser');
 
 class AccountController {
     login(req, res, next) {

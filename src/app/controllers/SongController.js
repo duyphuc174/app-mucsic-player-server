@@ -4,8 +4,15 @@ const { mongooseToObject } = require('../../util/mongoose');
 class SongController {
     // [GET] /songs
     async getAll(req, res, next) {
-        await Song.find({})
-            .populate('artist')
+        let songQuery = Song.find({});
+
+        if (req.query.hasOwnProperty('_sort')) {
+            songQuery = songQuery.sort({
+                [req.query.column]: req.query.type,
+            });
+        }
+
+        Promise.all([songQuery])
             .then((songs) => res.json(songs))
             .catch(next);
     }

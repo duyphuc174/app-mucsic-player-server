@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const route = require('./routers');
 const db = require('./config/db');
+const SortMiddleware = require('./app/middlewares/SortMiddleware');
 // Connect to db
 db.connect();
 
@@ -17,6 +18,8 @@ app.use(
     }),
 );
 app.use(express.json());
+
+app.use(SortMiddleware);
 
 // app.use(express.static(__dirname));
 

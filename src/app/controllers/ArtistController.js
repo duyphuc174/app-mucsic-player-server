@@ -4,8 +4,16 @@ const { mongooseToObject } = require('../../util/mongoose');
 class ArtistController {
     // [GET] /artists
     getAll(req, res, next) {
-        Promise.all([Artist.find({})])
-            .then(([artists]) => res.json(artists))
+        let artistQuery = Artist.find({});
+
+        if (req.query.hasOwnProperty('_sort')) {
+            artistQuery = artistQuery.sort({
+                [req.query.column]: req.query.type,
+            });
+        }
+
+        Promise.all([artistQuery])
+            .then((artists) => res.json(artists))
             .catch(next);
     }
 
