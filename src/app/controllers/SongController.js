@@ -27,7 +27,9 @@ class SongController {
 
     // [POST] /songs/create
     async create(req, res, next) {
-        const song = new Song(req.body);
+        const { name, introduction, lyrics, audio, artist } = req.body;
+        const imageUrl = `${__dirname}/img/${req.file.filename}`;
+        const song = new Song({ name, introduction, lyrics, audio, artist, imageUrl });
         await song
             .save()
             .then(() => res.json({ message: 'Thêm bài hát mới thành công!' }))
