@@ -2,11 +2,18 @@ const multer = require('multer');
 const path = require('path');
 
 const storage = multer.diskStorage({
-    destination: path.join(__dirname, 'public/img'),
+    destination: function (req, file, cb) {
+        if (file.fieldname === 'image') {
+            cb(null, path.join(__dirname, '../../public/img'));
+        } else if (file.fieldname === 'audio') {
+            cb(null, path.join(__dirname, '../../public/audio'));
+        }
+    },
     filename: (req, file, cb) => {
-        cb(null, `${Date.now()}-${file.originalname}`);
+        cb(null, file.originalname);
     },
 });
-
-const upload = multer({ storage });
-module.exports = UploadMiddleware = multer({ storage: storage });
+module.exports = UploadMiddleware = multer({ storage: storage }).fields([
+    { name: 'image', maxCount: 1 },
+    { name: 'audio', maxCount: 1 },
+]);

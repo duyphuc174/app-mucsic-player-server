@@ -4,7 +4,11 @@ const { mongooseToObject } = require('../../util/mongoose');
 class SongController {
     // [GET] /songs
     async getAll(req, res, next) {
-        let songQuery = Song.find({});
+        let condition = {};
+        if (req.query.hasOwnProperty('_find')) {
+            condition.name = new RegExp(req.query.search, 'i');
+        }
+        let songQuery = Song.find(condition);
 
         if (req.query.hasOwnProperty('_sort')) {
             songQuery = songQuery.sort({
@@ -27,9 +31,13 @@ class SongController {
 
     // [POST] /songs/create
     async create(req, res, next) {
-        const { name, introduction, lyrics, audio, artist } = req.body;
-        const imageUrl = `${__dirname}/img/${req.file.filename}`;
-        const song = new Song({ name, introduction, lyrics, audio, artist, imageUrl });
+        const baseUrl = `${req.protocol}://${req.headers.host}`;
+        const { name, introduction, lyrics, artist } = req.body;
+
+        const image = `${baseUrl}/img/${req.files.image[0].filename}`;
+        const audio = `${baseUrl}/audio/${req.files.audio[0].filename}`;
+
+        const song = new Song({ name, introduction, lyrics, audio, artist, image });
         await song
             .save()
             .then(() => res.json({ message: 'Thêm bài hát mới thành công!' }))
@@ -45,7 +53,22 @@ class SongController {
 
     // [PUT] /songs/:id
     async update(req, res, next) {
-        await Song.updateOne({ _id: req.params.id }, req.body)
+        const baseUrl = `${req.protocol}://${req.headers.host}`;
+        const { name, introduction, lyrics, artist } = req.body;
+
+        const image = `${baseUrl}/img/${req.files.image[0].filename}`;
+        const audio = `${baseUrl}/audio/${req.files.audio[0].filename}`;
+
+        const song = {
+            name: name,
+            introduction: introduction,
+            lyrics: lyrics,
+            artist: artist,
+            image: image !== null ? image : '',
+            audio: audio !== null ? audio : '',
+        };
+
+        await Song.updateOne({ _id: req.params.id }, song)
             .then(() => res.json({ message: 'Sửa bài hát thành công!' }))
             .catch(next);
     }

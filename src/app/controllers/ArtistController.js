@@ -4,7 +4,11 @@ const { mongooseToObject } = require('../../util/mongoose');
 class ArtistController {
     // [GET] /artists
     getAll(req, res, next) {
-        let artistQuery = Artist.find({});
+        let condition = {};
+        if (req.query.hasOwnProperty('_find')) {
+            condition.name = new RegExp(req.query.search, 'i');
+        }
+        let artistQuery = Artist.find(condition);
 
         if (req.query.hasOwnProperty('_sort')) {
             artistQuery = artistQuery.sort({
@@ -26,7 +30,12 @@ class ArtistController {
 
     // [POST] /artists/create
     create(req, res, next) {
-        const artist = new Artist(req.body);
+        const baseUrl = `${req.protocol}://${req.headers.host}`;
+        const { name, realName, introduction, sex, birthday } = req.body;
+
+        const image = `${baseUrl}/img/${req.files.image[0].filename}`;
+
+        const artist = new Artist({ name, realname, introduction, image, sex, birthday });
         artist
             .save()
             .then(() => res.json({ message: 'Thêm ca sĩ mới thành công!' }))

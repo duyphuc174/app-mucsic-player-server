@@ -9,7 +9,7 @@ const Artist = new Schema(
         introduction: { type: String },
         image: { type: String },
         sex: { type: String },
-        birthday: { type: String },
+        birthday: { type: Date },
     },
     {
         timestamps: true,
