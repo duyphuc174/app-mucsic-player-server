@@ -3,7 +3,7 @@ const { mongooseToObject } = require('../../util/mongoose');
 
 class SongController {
     // [GET] /songs
-    async getAll(req, res, next) {
+    getAll(req, res, next) {
         let condition = {};
         if (req.query.hasOwnProperty('_find')) {
             condition.name = new RegExp(req.query.search, 'i');
@@ -17,7 +17,7 @@ class SongController {
         }
 
         Promise.all([songQuery])
-            .then((songs) => res.json(songs))
+            .then(([songs]) => res.json(songs))
             .catch(next);
     }
 

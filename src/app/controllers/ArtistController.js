@@ -17,7 +17,7 @@ class ArtistController {
         }
 
         Promise.all([artistQuery])
-            .then((artists) => res.json(artists))
+            .then(([artists]) => res.json(artists))
             .catch(next);
     }
 
