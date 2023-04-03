@@ -10,6 +10,6 @@ module.exports = function TokenMiddleware(req, res, next) {
     User.findOne({
         _id: userId,
     })
-        .then(() => res.json({ message: 'Token hợp lệ!' }))
+        .then(() => res.json(token))
         .catch(() => res.json({ message: 'Không thể truy cập!' }));
 };
