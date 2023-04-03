@@ -18,24 +18,24 @@ class PlaylistController {
     }
 
     // [POST] /playlists/create
-    create(req, res, next) {
+    async create(req, res, next) {
         const playlist = new PlayList(req.body);
-        playlist
+        await playlist
             .save()
             .then(() => res.json({ message: 'Thêm playlist mới thành công!' }))
             .catch(next);
     }
 
     // [DELETE] /playlists/:id
-    delete(req, res, next) {
-        Playlist.deleteOne({ _id: req.params.id })
+    async delete(req, res, next) {
+        await Playlist.deleteOne({ _id: req.params.id })
             .then(() => res.json({ message: 'Xóa playlist thành công!' }))
             .catch(next);
     }
 
     // [PUT] /playlists/:id
-    update(req, res, next) {
-        Playlist.updateOne({ _id: req.params.id }, req.body)
+    async update(req, res, next) {
+        await Playlist.updateOne({ _id: req.params.id }, req.body)
             .then(() => res.json({ message: 'Sửa playlist thành công!' }))
             .catch(next);
     }

@@ -22,36 +22,36 @@ class ArtistController {
     }
 
     // [GET] /artists/:id
-    showById(req, res, next) {
-        Artist.findOne({ _id: req.params.id })
+    async showById(req, res, next) {
+        await Artist.findOne({ _id: req.params.id })
             .then((artist) => res.json(artist))
             .catch(next);
     }
 
     // [POST] /artists/create
-    create(req, res, next) {
+    async create(req, res, next) {
         const baseUrl = `${req.protocol}://${req.headers.host}`;
         const { name, realName, introduction, sex, birthday } = req.body;
 
         const image = `${baseUrl}/img/${req.files.image[0].filename}`;
 
         const artist = new Artist({ name, realname, introduction, image, sex, birthday });
-        artist
+        await artist
             .save()
             .then(() => res.json({ message: 'Thêm ca sĩ mới thành công!' }))
             .catch(next);
     }
 
     // [DELETE] /artists/:id
-    delete(req, res, next) {
-        Artist.deleteOne({ _id: req.params.id })
+    async delete(req, res, next) {
+        await Artist.deleteOne({ _id: req.params.id })
             .then(() => res.json({ message: 'Xóa ca sĩ thành công!' }))
             .catch(next);
     }
 
     // [PUT] /artists/:id
-    update(req, res, next) {
-        Artist.updateOne({ _id: req.params.id }, req.body)
+    async update(req, res, next) {
+        await Artist.updateOne({ _id: req.params.id }, req.body)
             .then(() => res.json({ message: 'Sửa ca sĩ thành công!' }))
             .catch(next);
     }

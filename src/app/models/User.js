@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 const Schema = mongoose.Schema;
 
 const User = new Schema(
@@ -7,7 +9,8 @@ const User = new Schema(
         password: { type: String },
         image: { type: String },
         sex: { type: String },
-        birthday: { type: String },
+        role: { type: String },
+        birthday: { type: Date },
     },
     {
         timestamps: true,

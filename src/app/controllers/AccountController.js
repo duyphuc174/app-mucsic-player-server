@@ -18,6 +18,8 @@ class AccountController {
             })
             .catch(next);
     }
+
+    async register(req, res, next) {}
 }
 
 module.exports = new AccountController();
