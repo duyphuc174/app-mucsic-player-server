@@ -16,7 +16,7 @@ class UserController {
             .then((user) => {
                 const token = jwt.sign({ _id: user._id }, 'NDP', { expiresIn: '24h' });
                 res.cookie('token', token, { maxAge: 3600000, httpOnly: true });
-                return res.json({ massage: 'Đăng nhập thành công!' });
+                return res.json(token);
             })
             .catch((err) => {
                 res.json({ message: 'Tài khoản hoặc mật khẩu không chính xác!' });
