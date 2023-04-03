@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const route = require('./routers');
 const db = require('./config/db');
+const cookieParser = require('cookie-parser');
 const SortMiddleware = require('./app/middlewares/SortMiddleware');
 const FindMiddleware = require('./app/middlewares/FindMiddleware');
 const UploadMiddleware = require('./app/middlewares/UploadMiddleware');
@@ -22,6 +23,7 @@ app.use(
 );
 app.use(express.json());
 
+app.use(cookieParser);
 app.use(SortMiddleware);
 app.use(FindMiddleware);
 app.use(UploadMiddleware);
