@@ -1,20 +1,12 @@
 const Song = require('../models/Song');
 const { mongooseToObject } = require('../../util/mongoose');
+const { createObject } = require('../../util/create');
+const { createQuery } = require('../../util/query');
 
 class SongController {
     // [GET] /songs
-    getAll(req, res, next) {
-        let condition = {};
-        if (req.query.hasOwnProperty('_find')) {
-            condition.name = new RegExp(req.query.search, 'i');
-        }
-        let songQuery = Song.find(condition);
-
-        if (req.query.hasOwnProperty('_sort')) {
-            songQuery = songQuery.sort({
-                [req.query.column]: req.query.type,
-            });
-        }
+    showAll(req, res, next) {
+        const songQuery = createQuery(req, Song);
 
         Promise.all([songQuery])
             .then(([songs]) => res.json(songs))
@@ -29,51 +21,55 @@ class SongController {
             .catch(next);
     }
 
+    // [GET] /songs/deleted
+    async showDeletedSongs(req, res, next) {
+        await Song.findDeleted({})
+            .then((songs) => res.json(songs))
+            .catch(next);
+    }
+
     // [POST] /songs/create
     async create(req, res, next) {
-        const baseUrl = `${req.protocol}://${req.headers.host}`;
-        const { name, introduction, lyrics, artist } = req.body;
+        const songCreate = createObject(req);
 
-        const image = `${baseUrl}/img/${req.files.image[0].filename}`;
-        const audio = `${baseUrl}/audio/${req.files.audio[0].filename}`;
-
-        const song = new Song({ name, introduction, lyrics, audio, artist, image });
+        const song = new Song(songCreate);
         await song
             .save()
             .then(() => res.json({ message: 'Thêm bài hát mới thành công!' }))
             .catch(next);
     }
 
+    // [DELETE] /songs/:id/force
+    async forceDelete(req, res, next) {
+        await Song.deleteOne({ _id: req.params.id })
+            .then(() => res.json({ message: 'Bài hát đã được xóa vĩnh viễn!' }))
+            .catch(next);
+    }
+
     // [DELETE] /songs/:id
     async delete(req, res, next) {
-        await Song.deleteOne({ _id: req.params.id })
-            .then(() => res.json({ message: 'Đã xóa bài hát thành công!' }))
+        await Song.delete({ _id: req.params.id })
+            .then(() => res.json({ message: 'Bài hát đã được xóa!' }))
+            .catch(next);
+    }
+
+    // [PATCH] /songs/:id/restore
+    async restore(req, res, next) {
+        await Song.restore({ _id: req.params.id })
+            .then(() => {
+                res.json({ message: 'Khôi phục bài hát thành công!' });
+            })
             .catch(next);
     }
 
     // [PUT] /songs/:id
     async update(req, res, next) {
-        const baseUrl = `${req.protocol}://${req.headers.host}`;
-        const { name, introduction, lyrics, artist } = req.body;
+        const songUpdate = createObject(req);
 
-        const image = `${baseUrl}/img/${req.files.image[0].filename}`;
-        const audio = `${baseUrl}/audio/${req.files.audio[0].filename}`;
-
-        const song = {
-            name: name,
-            introduction: introduction,
-            lyrics: lyrics,
-            artist: artist,
-            image: image !== null ? image : '',
-            audio: audio !== null ? audio : '',
-        };
-
-        await Song.updateOne({ _id: req.params.id }, song)
+        await Song.updateOne({ _id: req.params.id }, songUpdate)
             .then(() => res.json({ message: 'Sửa bài hát thành công!' }))
             .catch(next);
     }
-
-    // [POST] /songs/:query
 }
 
 module.exports = new SongController();

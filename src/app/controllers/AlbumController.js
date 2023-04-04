@@ -4,8 +4,20 @@ const { mongooseToObject } = require('../../util/mongoose');
 class AlbumController {
     // [GET] /albums
     async getAll(req, res, next) {
-        await Album.find({})
-            .then((albums) => res.json(albums))
+        let condition = {};
+        if (req.query.hasOwnProperty('_find')) {
+            condition.name = new RegExp(req.query.search, 'i');
+        }
+        let albumQuery = Album.find(condition);
+
+        if (req.query.hasOwnProperty('_sort')) {
+            albumQuery = albumQuery.sort({
+                [req.query.column]: req.query.type,
+            });
+        }
+
+        Promise.all([albumQuery])
+            .then(([albums]) => res.json(albums))
             .catch(next);
     }
 
@@ -20,7 +32,13 @@ class AlbumController {
 
     // [POST] /albums/create
     create(req, res, next) {
-        const album = new Album(req.body);
+        const baseUrl = `${req.protocol}://${req.headers.host}`;
+        const albumCreate = req.body;
+        if (req.files.image) {
+            const image = `${baseUrl}/img/${req.files.image[0].filename}`;
+            albumCreate.image = image;
+        }
+        const album = new Album(albumCreate);
         album
             .save()
             .then(() => res.json({ message: 'Thêm album mới thành công!' }))
