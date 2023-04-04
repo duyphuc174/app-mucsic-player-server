@@ -18,8 +18,8 @@ const Artist = new Schema(
 );
 
 Artist.plugin(mongooseDelete, {
+    overrideMethods: true,
     deletedAt: true,
-    overrideMethods: 'all',
 });
 
 module.exports = mongoose.model('Artist', Artist);

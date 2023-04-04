@@ -1,20 +1,12 @@
 const Album = require('../models/Album');
 const { mongooseToObject } = require('../../util/mongoose');
+const { createObject } = require('../../util/create');
+const { createQuery } = require('../../util/query');
 
 class AlbumController {
     // [GET] /albums
-    async getAll(req, res, next) {
-        let condition = {};
-        if (req.query.hasOwnProperty('_find')) {
-            condition.name = new RegExp(req.query.search, 'i');
-        }
-        let albumQuery = Album.find(condition);
-
-        if (req.query.hasOwnProperty('_sort')) {
-            albumQuery = albumQuery.sort({
-                [req.query.column]: req.query.type,
-            });
-        }
+    async showAll(req, res, next) {
+        const albumQuery = createQuery(req, Album);
 
         Promise.all([albumQuery])
             .then(([albums]) => res.json(albums))
@@ -22,7 +14,7 @@ class AlbumController {
     }
 
     // [GET] /albums/:albumId
-    async getById(req, res, next) {
+    async showById(req, res, next) {
         await Album.findOne({ _id: req.params.id })
             .populate('songs')
             .populate('artist')
@@ -31,30 +23,26 @@ class AlbumController {
     }
 
     // [POST] /albums/create
-    create(req, res, next) {
-        const baseUrl = `${req.protocol}://${req.headers.host}`;
-        const albumCreate = req.body;
-        if (req.files.image) {
-            const image = `${baseUrl}/img/${req.files.image[0].filename}`;
-            albumCreate.image = image;
-        }
+    async create(req, res, next) {
+        const albumCreate = createObject(req);
         const album = new Album(albumCreate);
-        album
+        await album
             .save()
             .then(() => res.json({ message: 'Thêm album mới thành công!' }))
             .catch(next);
     }
 
     // [DELETE] /albums/:id
-    delete(req, res, next) {
-        Album.deleteOne({ _id: req.params.id })
+    async delete(req, res, next) {
+        await Album.delete({ _id: req.params.id })
             .then(() => res.json({ message: 'Xóa album thành công!' }))
             .catch(next);
     }
 
     // [PUT] /albums/:id
-    update(req, res, next) {
-        Album.updateOne({ _id: req.params.id }, req.body)
+    async update(req, res, next) {
+        const albumUpdate = createObject(req);
+        await Album.updateOne({ _id: req.params.id }, albumUpdate)
             .then(() => res.json({ message: 'Sửa album thành công!' }))
             .catch(next);
     }

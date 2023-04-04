@@ -22,7 +22,7 @@ class ArtistController {
 
     // [GET] /artists/deleted
     async showDeleted(req, res, next) {
-        await Artist.findDeleted({})
+        await Artist.findDeleted()
             .then((artists) => res.json(artists))
             .catch(next);
     }

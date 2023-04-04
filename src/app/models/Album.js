@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongooseDelete = require('mongoose-delete');
 
 const Schema = mongoose.Schema;
 
@@ -14,5 +15,10 @@ const Album = new Schema(
         timestamps: true,
     },
 );
+
+Album.plugin(mongooseDelete, {
+    overrideMethods: true,
+    deletedAt: true,
+});
 
 module.exports = mongoose.model('Album', Album);
