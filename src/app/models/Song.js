@@ -19,7 +19,7 @@ const Song = new Schema(
 
 Song.plugin(mongooseDelete, {
     deletedAt: true,
-    overrideMethods: 'all',
+    overrideMethods: true,
 });
 
 module.exports = mongoose.model('Song', Song);

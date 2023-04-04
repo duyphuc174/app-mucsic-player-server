@@ -8,6 +8,7 @@ class SongController {
     showAll(req, res, next) {
         const songQuery = createQuery(req, Song);
 
+        songQuery.populate('artist');
         Promise.all([songQuery])
             .then(([songs]) => res.json(songs))
             .catch(next);
@@ -22,7 +23,7 @@ class SongController {
     }
 
     // [GET] /songs/deleted
-    async showDeletedSongs(req, res, next) {
+    async showDeleted(req, res, next) {
         await Song.findDeleted({})
             .then((songs) => res.json(songs))
             .catch(next);
@@ -31,8 +32,8 @@ class SongController {
     // [POST] /songs/create
     async create(req, res, next) {
         const songCreate = createObject(req);
-
         const song = new Song(songCreate);
+
         await song
             .save()
             .then(() => res.json({ message: 'Thêm bài hát mới thành công!' }))

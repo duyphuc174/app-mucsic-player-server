@@ -4,9 +4,11 @@ const cors = require('cors');
 const route = require('./routers');
 const db = require('./config/db');
 const cookieParser = require('cookie-parser');
+const authRouter = require('./routers/auth.router');
 const SortMiddleware = require('./app/middlewares/SortMiddleware');
 const FindMiddleware = require('./app/middlewares/FindMiddleware');
 const UploadMiddleware = require('./app/middlewares/UploadMiddleware');
+const AuthMiddleware = require('./app/middlewares/AuthMiddleware');
 // Connect to db
 db.connect();
 
@@ -23,7 +25,12 @@ app.use(
 );
 app.use(express.json());
 
+// Xác thực đăng nhập
+app.use('/auth', authRouter);
+
+// Middleware
 app.use(cookieParser());
+app.use(AuthMiddleware);
 app.use(SortMiddleware);
 app.use(FindMiddleware);
 app.use(UploadMiddleware);

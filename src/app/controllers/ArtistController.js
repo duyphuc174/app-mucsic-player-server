@@ -5,7 +5,7 @@ const { createQuery } = require('../../util/query');
 
 class ArtistController {
     // [GET] /artists
-    getAll(req, res, next) {
+    showAll(req, res, next) {
         const artistQuery = createQuery(req, Artist);
 
         Promise.all([artistQuery])
@@ -20,6 +20,13 @@ class ArtistController {
             .catch(next);
     }
 
+    // [GET] /artists/deleted
+    async showDeleted(req, res, next) {
+        await Artist.findDeleted({})
+            .then((artists) => res.json(artists))
+            .catch(next);
+    }
+
     // [POST] /artists/create
     async create(req, res, next) {
         const artistCreate = createObject(req);
@@ -31,16 +38,33 @@ class ArtistController {
             .catch(next);
     }
 
+    // [DELETE] /artists/:id/force
+    async forceDelete(req, res, next) {
+        await Artist.deleteOne({ _id: req.params.id })
+            .then(() => res.json({ message: 'Ca sĩ đã được xóa vĩnh viễn!' }))
+            .catch(next);
+    }
+
     // [DELETE] /artists/:id
     async delete(req, res, next) {
-        await Artist.deleteOne({ _id: req.params.id })
+        await Artist.delete({ _id: req.params.id })
             .then(() => res.json({ message: 'Xóa ca sĩ thành công!' }))
+            .catch(next);
+    }
+
+    // [PATCH] /artists/:id/restore
+    async restore(req, res, next) {
+        await Artist.restore({ _id: req.params.id })
+            .then(() => {
+                res.json({ message: 'Khôi phục ca sĩ thành công!' });
+            })
             .catch(next);
     }
 
     // [PUT] /artists/:id
     async update(req, res, next) {
-        await Artist.updateOne({ _id: req.params.id }, req.body)
+        const artistUpdate = createObject(req);
+        await Artist.updateOne({ _id: req.params.id }, artistUpdate)
             .then(() => res.json({ message: 'Sửa ca sĩ thành công!' }))
             .catch(next);
     }
