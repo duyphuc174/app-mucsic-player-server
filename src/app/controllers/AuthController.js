@@ -12,7 +12,9 @@ class AuthController {
             password: password,
         })
             .then((user) => {
-                const token = jwt.sign({ _id: user._id }, 'NDP', { expiresIn: '24h' });
+                const token = jwt.sign({ _id: user._id, username: user.username, role: user.role }, 'NDP', {
+                    expiresIn: '24h',
+                });
                 res.cookie('token', token, { maxAge: 3600000, httpOnly: true });
                 return res.json(token);
             })
