@@ -8,6 +8,7 @@ router.post('/create', albumController.create);
 router.delete('/:id', albumController.delete);
 router.put('/:id', albumController.update);
 router.put('/:id/add-song', albumController.addSong);
+router.put('/:id/delete-song', albumController.deleteSong);
 router.get('/', albumController.showAll);
 
 module.exports = router;

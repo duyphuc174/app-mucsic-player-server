@@ -52,8 +52,30 @@ class PlaylistController {
             return res.status(400).json({ message: 'Bài hát đã có trong playlist' });
         }
         songs.push(songId);
-        await PlayList.updateOne({ _id: req.params.id }, songs)
+
+        const songUpdate = {
+            songs: songs,
+        };
+        await PlayList.updateOne({ _id: req.params.id }, songUpdate)
             .then(() => res.json({ message: 'Bài hát đã được thêm vào playlist!' }))
+            .catch(next);
+    }
+
+    // [PUT] /playlists/:id/delete-song
+    async deleteSong(req, res, next) {
+        const playlist = await PlayList.findOne({ _id: req.params.id });
+        let songs = playlist.songs;
+        const songId = req.body._id;
+        if (!songs.includes(songId)) {
+            return res.status(400).json({ message: 'Bài hát không có trong playlist' });
+        }
+        songs = songs.fillter((song) => song !== songId);
+
+        const songUpdate = {
+            songs: songs,
+        };
+        await PlayList.updateOne({ _id: req.params.id }, songUpdate)
+            .then(() => res.json({ message: 'Bài hát đã được xóa khỏi playlist!' }))
             .catch(next);
     }
 }

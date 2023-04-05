@@ -57,11 +57,28 @@ class AlbumController {
             return res.status(400).json({ message: 'Bài hát đã có trong album' });
         }
         songs.push(songId);
-        const albumUpdate = {
+        const songUpdate = {
             songs: songs,
         };
-        await Album.updateOne({ _id: req.params.id }, albumUpdate)
+        await Album.updateOne({ _id: req.params.id }, songUpdate)
             .then(() => res.json({ message: 'Bài hát đã được thêm vào album!' }))
+            .catch(next);
+    }
+
+    // [PUT] /albums/:id/delete-song
+    async deleteSong(req, res, next) {
+        const album = await Album.findOne({ _id: req.params.id });
+        let songs = album.songs;
+        const songId = req.body._id;
+        if (!songs.includes(songId)) {
+            return res.status(400).json({ message: 'Bài hát không có trong album' });
+        }
+        songs = songs.filter((song) => song !== songId);
+        const songUpdate = {
+            songs: songs,
+        };
+        await Album.updateOne({ _id: req.params.id }, songUpdate)
+            .then(() => res.json({ message: 'Bài hát đã được xóa khỏi album!' }))
             .catch(next);
     }
 }
