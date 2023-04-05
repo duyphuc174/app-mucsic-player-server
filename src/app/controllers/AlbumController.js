@@ -7,6 +7,7 @@ class AlbumController {
     // [GET] /albums
     async showAll(req, res, next) {
         const albumQuery = createQuery(req, Album);
+        albumQuery.populate('songs').populate('artist');
 
         Promise.all([albumQuery])
             .then(([albums]) => res.json(albums))
@@ -56,7 +57,10 @@ class AlbumController {
             return res.status(400).json({ message: 'Bài hát đã có trong album' });
         }
         songs.push(songId);
-        await Album.updateOne({ _id: req.params.id }, songs)
+        const albumUpdate = {
+            songs: songs,
+        };
+        await Album.updateOne({ _id: req.params.id }, albumUpdate)
             .then(() => res.json({ message: 'Bài hát đã được thêm vào album!' }))
             .catch(next);
     }
