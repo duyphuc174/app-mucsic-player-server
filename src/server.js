@@ -30,7 +30,7 @@ app.use('/auth', authRouter);
 
 // Middleware
 app.use(cookieParser());
-app.use(AuthMiddleware);
+// app.use(AuthMiddleware);
 app.use(SortMiddleware);
 app.use(FindMiddleware);
 app.use(UploadMiddleware);

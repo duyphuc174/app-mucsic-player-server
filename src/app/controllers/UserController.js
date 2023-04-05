@@ -12,6 +12,7 @@ class UserController {
             return res.status(400).json({ message: 'Bạn chưa đăng nhập!' });
         }
         const userId = jwt.verify(token, 'NDP');
+        console.log(userId);
         await User.findOne({ _id: userId })
             .then((user) => {
                 res.json({

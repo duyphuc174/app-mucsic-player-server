@@ -3,9 +3,10 @@ const { mongooseToObject } = require('../../util/mongoose');
 const { createObject } = require('../../util/create');
 
 class PlaylistController {
-    // [GET] /playlists/:userId
+    // [GET] /playlists/user/:userId
     async showByUser(req, res, next) {
         await PlayList.find({ user: req.params.userId })
+            .populate('songs')
             .then((playLists) => res.json(playLists))
             .catch(next);
     }
@@ -21,7 +22,7 @@ class PlaylistController {
     // [POST] /playlists/create
     async create(req, res, next) {
         const playlistCreate = createObject(req);
-        const playList = new playlistCreate();
+        const playlist = new PlayList(playlistCreate);
 
         await playlist
             .save()
