@@ -21,16 +21,12 @@ class PlaylistController {
             .catch(next);
     }
 
-    // [POST] /playlists/:userId/create
+    // [POST] /playlists/create
     async create(req, res, next) {
-        // console.log(req.cookies.token);
-        // const userId = getToken(req, res);
-        const userId = req.params.userId;
-        // let playlistCreate = createObject(req);
-        // playlistCreate.user = userId;
-        // console.log(playlistCreate);
-        const playlistCreate = req.body;
+        const userId = getToken(req, res);
+        let playlistCreate = createObject(req);
         playlistCreate.user = userId;
+        // console.log(playlistCreate);
         const playlist = new PlayList(playlistCreate);
 
         await playlist
