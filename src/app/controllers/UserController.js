@@ -1,17 +1,13 @@
 const User = require('../models/User');
 const { mongooseToObject } = require('../../util/mongoose');
-const jwt = require('jsonwebtoken');
 const cookierParser = require('cookie-parser');
 const { createObject } = require('../../util/create');
+const { getToken } = require('../../util/token');
 
 class UserController {
     // [GET] /users/profile
     async showProfile(req, res, next) {
-        const token = req.cookies.token;
-        if (!token) {
-            return res.status(400).json({ message: 'Bạn chưa đăng nhập!' });
-        }
-        const userId = jwt.verify(token, 'NDP');
+        const userId = getToken(req, res);
         console.log(userId);
         await User.findOne({ _id: userId })
             .then((user) => {
@@ -28,11 +24,7 @@ class UserController {
 
     // [PUT] /users/profile
     async updateProfile(req, res, next) {
-        const token = req.cookies.token;
-        if (!token) {
-            return res.status(400).json({ message: 'Bạn chưa đăng nhập!' });
-        }
-        const userId = jwt.verify(token, 'NDP');
+        const userId = getToken(req, res);
         const profileUpdate = createObject(req);
 
         await User.updateOne({ _id: userId }, profileUpdate)

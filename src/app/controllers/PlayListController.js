@@ -1,11 +1,13 @@
 const PlayList = require('../models/PlayList');
 const { mongooseToObject } = require('../../util/mongoose');
 const { createObject } = require('../../util/create');
+const { getToken } = require('../../util/token');
 
 class PlaylistController {
     // [GET] /playlists/user/:userId
-    async showByUser(req, res, next) {
-        await PlayList.find({ user: req.params.userId })
+    async showAll(req, res, next) {
+        const userId = getToken(req, res);
+        await PlayList.find({ user: userId })
             .populate('songs')
             .then((playLists) => res.json(playLists))
             .catch(next);
@@ -21,7 +23,10 @@ class PlaylistController {
 
     // [POST] /playlists/create
     async create(req, res, next) {
-        const playlistCreate = createObject(req);
+        const userId = getToken(req, res);
+        let playlistCreate = createObject(req);
+        playlistCreate.user = userId;
+        console.log(playlistCreate);
         const playlist = new PlayList(playlistCreate);
 
         await playlist
@@ -32,14 +37,14 @@ class PlaylistController {
 
     // [DELETE] /playlists/:id
     async delete(req, res, next) {
-        await Playlist.delete({ _id: req.params.id })
+        await PlayList.delete({ _id: req.params.id })
             .then(() => res.json({ message: 'Xóa playlist thành công!' }))
             .catch(next);
     }
 
     // [PUT] /playlists/:id
     async update(req, res, next) {
-        await Playlist.updateOne({ _id: req.params.id }, req.body)
+        await PlayList.updateOne({ _id: req.params.id }, req.body)
             .then(() => res.json({ message: 'Sửa playlist thành công!' }))
             .catch(next);
     }
