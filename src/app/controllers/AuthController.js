@@ -15,7 +15,7 @@ class AuthController {
                 const token = jwt.sign({ _id: user._id, role: user.role }, 'NDP', {
                     expiresIn: '24h',
                 });
-                res.cookie('token', token, { maxAge: 3600000, httpOnly: true });
+                // res.cookie('token', token, { maxAge: 3600000, httpOnly: true });
                 return res.json(token);
             })
             .catch((err) => {

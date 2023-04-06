@@ -2,6 +2,7 @@ module.exports = {
     createObject: function (req) {
         const baseUrl = `${req.protocol}://${req.headers.host}`;
         const Create = req.body;
+        console.log(req.body);
 
         if (req.files.image) {
             const image = `${baseUrl}/img/${req.files.image[0].filename}`;
