@@ -6,7 +6,8 @@ const { getToken } = require('../../util/token');
 class PlaylistController {
     // [GET] /playlists/user/:userId
     async showAll(req, res, next) {
-        const userId = getToken(req, res);
+        // const userId = getToken(req, res);
+        const userId = req.params.userId;
         await PlayList.find({ user: userId })
             .populate('songs')
             .then((playLists) => res.json(playLists))
@@ -21,11 +22,11 @@ class PlaylistController {
             .catch(next);
     }
 
-    // [POST] /playlists/create
+    // [POST] /playlists/:userId/create
     async create(req, res, next) {
-        const userId = getToken(req, res);
+        // const userId = getToken(req, res);
         let playlistCreate = createObject(req);
-        playlistCreate.user = userId;
+        playlistCreate.user = req.params.userId;
         // console.log(playlistCreate);
         const playlist = new PlayList(playlistCreate);
 
